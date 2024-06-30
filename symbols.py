@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class Symbol(Enum):
     Plus = auto(), 1
     Minus = auto(), 1
@@ -24,6 +25,7 @@ class Symbol(Enum):
     SemiColon = auto(), 0
     Else = auto(), 0
     Comma = auto(), 0
+
 
 class BuiltinFunction(Enum):
     Print = auto()

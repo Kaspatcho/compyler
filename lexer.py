@@ -2,6 +2,7 @@ from symbols import Symbol, BuiltinFunction
 
 assert len(Symbol) == 23, 'lexer nao cobre todos os simbolos'
 
+
 def match_keywords(word: str):
     match word:
         case 'if':
@@ -92,5 +93,5 @@ def lexer(expression: str) -> list[Symbol]:
                 symbols.append(s)
 
             case _: raise Exception(f'nao sei oq é "{c}"')
-    
+
     return symbols

@@ -2,15 +2,16 @@ from symbols import Symbol
 
 assert len(Symbol) == 23, 'BinaryExpression nao cobre todos os simbolos'
 
+
 class BinaryExpression:
     def __init__(self, left, op, right) -> None:
         self.left = left
         self.op = op
         self.right = right
-    
+
     def __repr__(self) -> str:
         return f'BinaryExpression({self.left}, {self.op}, {self.right})'
-    
+
     def print(self, indentation=2):
         print((' ' * (indentation - 2)) + 'BinaryExpression')
 
@@ -18,7 +19,7 @@ class BinaryExpression:
             self.left.print(indentation + 2)
         else:
             print((' ' * indentation) + str(self.left))
-        
+
         print((' ' * indentation) + str(self.op))
 
         if getattr(self.right, 'print', False):
@@ -26,7 +27,6 @@ class BinaryExpression:
         else:
             print((' ' * indentation) + str(self.right))
 
-    
     def execute(self):
         a = getattr(self.left, 'execute', None)
         b = getattr(self.right, 'execute', None)

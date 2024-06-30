@@ -4,6 +4,7 @@ from typing import List
 
 assert len(BuiltinFunction) == 2, 'Builtin nao cobre todas as funcoes'
 
+
 class Builtin:
     def __init__(self, type: BuiltinFunction, args: List[BinaryExpression]) -> None:
         self.type = type
@@ -25,4 +26,3 @@ class Builtin:
                 return input(self.args[0])
             case _:
                 raise Exception(f'unknown function "{self.type}"')
-

@@ -4,6 +4,7 @@ from statement import IfStatement
 from builtin import Builtin
 from block import Block
 
+
 def parse_expression(symbols: list):
     left = symbols.pop(0)
     if left == Symbol.OpenParen: left = parse_parens(symbols)
@@ -39,7 +40,7 @@ def parse_symbols(symbols: list):
 
     if isinstance(symbols[0], BuiltinFunction):
         return parse_builtin(symbols)
-    
+
     if isinstance(symbols[0], str):
         return symbols.pop(0)
 
