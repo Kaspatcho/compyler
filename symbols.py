@@ -25,6 +25,7 @@ class Symbol(Enum):
     SemiColon = auto(), 0
     Else = auto(), 0
     Comma = auto(), 0
+    Let = auto(), 0
 
 
 class BuiltinFunction(Enum):

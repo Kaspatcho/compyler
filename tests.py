@@ -52,6 +52,10 @@ class TestLexer(TestCase):
         symbols = lexer('if else')
         self.assertEqual(symbols, [Symbol.If, Symbol.Else])
 
+    def test_let(self):
+        symbols = lexer('let a = 1')
+        self.assertEqual(symbols, [Symbol.Let, 'a', Symbol.Equal, 1])
+
 
 def expression(lexer_value: str = '', input_value: str = '', stdout: str = ''):
     def decorator(function: callable):
@@ -179,6 +183,33 @@ class TestBuiltin(TestCase):
 
     @expression(lexer_value='if (7%2 == 0) { print("even"); } else { print("odd"); 1; }', stdout='odd')
     def test_print_with_return(self, result):
+        self.assertEqual(result, 1)
+
+
+class TestVariable(TestCase):
+    @expression(lexer_value='let a=1')
+    def test_assignment(self, result):
+        self.assertEqual(result, 1)
+
+    @expression(lexer_value='{let b=1; b=2;}')
+    def test_setting_value(self, result):
+        self.assertEqual(result, 2)
+
+    def test_cannot_reset_variable(self):
+        with self.assertRaises(AssertionError):
+            symbols = lexer('{let c=1; let c=2;}')
+            parse_symbols(symbols)
+
+    @expression(lexer_value='{let d=1+1;}')
+    def test_variable_expression(self, result):
+        self.assertEqual(result, 2)
+
+    @expression(lexer_value='{let e = 2; e + 2; }')
+    def test_expression_variable(self, result):
+        self.assertEqual(result, 4)
+
+    @expression(lexer_value='{let age = 19; if(age >= 18) { 1; } else {0; }; }')
+    def test_conditions(self, result):
         self.assertEqual(result, 1)
 
 

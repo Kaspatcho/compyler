@@ -1,6 +1,7 @@
 from symbols import Symbol, BuiltinFunction
 from binary_expression import BinaryExpression
 from statement import IfStatement
+from variable import Variable, VARIABLES
 from builtin import Builtin
 from block import Block
 
@@ -38,8 +39,14 @@ def parse_symbols(symbols: list):
     if symbols[0] == Symbol.If:
         return parse_statement(symbols)
 
+    if symbols[0] == Symbol.Let:
+        return parse_let(symbols)
+
     if isinstance(symbols[0], BuiltinFunction):
         return parse_builtin(symbols)
+
+    if isinstance(symbols[0], str) and symbols[0] in VARIABLES.keys():
+        return parse_variable(symbols)
 
     if isinstance(symbols[0], str):
         return symbols.pop(0)
@@ -83,6 +90,37 @@ def parse_block(symbols: list):
     symbols.pop(0)
 
     return Block(lines)
+
+
+def parse_let(symbols: list):
+    symbols.pop(0)
+    assert len(symbols) > 0, 'invalid let statement: missing variable name'
+
+    name = symbols.pop(0)
+    assert isinstance(name, str), 'invalid variable name'
+
+    assert len(symbols) > 0 and symbols[0] == Symbol.Equal, 'invalid let statement: missing ='
+    symbols.pop(0)
+
+    assert len(symbols) > 0, 'invalid let statement: missing value'
+    value = parse_symbols(symbols)
+
+    return Variable(name, value)
+
+
+def parse_variable(symbols: list):
+    name = symbols.pop(0)
+    assert name in VARIABLES.keys(), f'unknown variable "{name}"'
+    variable = VARIABLES[name]
+
+    if len(symbols) > 0 and symbols[0] == Symbol.Equal:
+        symbols.pop(0)
+        assert len(symbols) > 0, 'invalid variable assignment: missing value'
+        value = parse_symbols(symbols)
+        return variable.set(value)
+
+    symbols.insert(0, variable)
+    return parse_symbols(symbols)
 
 
 def parse_statement(symbols: list):

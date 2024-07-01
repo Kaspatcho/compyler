@@ -1,6 +1,7 @@
 from symbols import Symbol
+from variable import VARIABLES
 
-assert len(Symbol) == 23, 'BinaryExpression nao cobre todos os simbolos'
+assert len(Symbol) == 24, 'BinaryExpression nao cobre todos os simbolos'
 
 
 class BinaryExpression:
@@ -28,10 +29,10 @@ class BinaryExpression:
             print((' ' * indentation) + str(self.right))
 
     def execute(self):
-        a = getattr(self.left, 'execute', None)
-        b = getattr(self.right, 'execute', None)
-        a = a() if a else self.left
-        b = b() if b else self.right
+        a = VARIABLES[self.left] if self.left in VARIABLES.keys() else self.left
+        b = VARIABLES[self.right] if self.right in VARIABLES.keys() else self.right
+        a = a.execute() if hasattr(a, 'execute') else a
+        b = b.execute() if hasattr(b, 'execute') else b
 
         match self.op:
             case Symbol.Plus:
