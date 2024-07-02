@@ -29,8 +29,8 @@ class BinaryExpression:
             print((' ' * indentation) + str(self.right))
 
     def execute(self):
-        a = VARIABLES[self.left] if self.left in VARIABLES.keys() else self.left
-        b = VARIABLES[self.right] if self.right in VARIABLES.keys() else self.right
+        a = VARIABLES[self.left].get() if self.left in VARIABLES.keys() else self.left
+        b = VARIABLES[self.right].get() if self.right in VARIABLES.keys() else self.right
         a = a.execute() if hasattr(a, 'execute') else a
         b = b.execute() if hasattr(b, 'execute') else b
 

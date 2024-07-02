@@ -1,7 +1,7 @@
 from symbols import Symbol, BuiltinFunction
 from binary_expression import BinaryExpression
 from statement import IfStatement
-from variable import Variable, VARIABLES
+from variable import Variable, VARIABLES, VariableAssignment
 from builtin import Builtin
 from block import Block
 
@@ -130,7 +130,7 @@ def parse_variable(symbols: list):
             raise SyntaxError('invalid variable assignment: missing value')
 
         value = parse_symbols(symbols)
-        return variable.set(value)
+        return VariableAssignment(variable, value)
 
     symbols.insert(0, variable)
     return parse_symbols(symbols)
