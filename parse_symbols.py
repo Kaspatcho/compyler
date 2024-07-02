@@ -56,7 +56,8 @@ def parse_symbols(symbols: list):
 
 def parse_builtin(symbols):
     type = symbols.pop(0)
-    assert len(symbols) > 0 and symbols[0] == Symbol.OpenParen, 'invalid syntax for function'
+    if len(symbols) < 0 or symbols[0] != Symbol.OpenParen:
+        raise SyntaxError('invalid syntax for function')
     symbols.pop(0)
     args = parse_args(symbols)
     return Builtin(type, args)
@@ -83,10 +84,12 @@ def parse_block(symbols: list):
     lines = []
     while len(symbols) > 0 and symbols[0] != Symbol.CloseBracket:
         lines.append(parse_symbols(symbols))
-        assert len(symbols) > 0 and symbols[0] == Symbol.SemiColon, 'line without semicolon'
+        if len(symbols) == 0 or symbols[0] != Symbol.SemiColon:
+            raise SyntaxError('line without semicolon')
         symbols.pop(0)
 
-    assert len(symbols) > 0 and symbols[0] == Symbol.CloseBracket, 'unclosed block'
+    if len(symbols) == 0 or symbols[0] != Symbol.CloseBracket:
+        raise SyntaxError('line without semicolon')
     symbols.pop(0)
 
     return Block(lines)
@@ -94,15 +97,21 @@ def parse_block(symbols: list):
 
 def parse_let(symbols: list):
     symbols.pop(0)
-    assert len(symbols) > 0, 'invalid let statement: missing variable name'
+    if len(symbols) == 0:
+        raise SyntaxError('invalid let statement: missing variable name')
 
     name = symbols.pop(0)
-    assert isinstance(name, str), 'invalid variable name'
+    if not isinstance(name, str):
+        raise TypeError('invalid variable name type')
 
-    assert len(symbols) > 0 and symbols[0] == Symbol.Equal, 'invalid let statement: missing ='
+    if len(symbols) == 0 or symbols[0] != Symbol.Equal:
+        raise SyntaxError('invalid let statement: missing =')
+
     symbols.pop(0)
 
-    assert len(symbols) > 0, 'invalid let statement: missing value'
+    if len(symbols) == 0:
+        raise SyntaxError('invalid let statement: missing value')
+
     value = parse_symbols(symbols)
 
     return Variable(name, value)
@@ -110,12 +119,16 @@ def parse_let(symbols: list):
 
 def parse_variable(symbols: list):
     name = symbols.pop(0)
-    assert name in VARIABLES.keys(), f'unknown variable "{name}"'
+    if name not in VARIABLES.keys():
+        raise NameError(f'unknown variable "{name}"')
+
     variable = VARIABLES[name]
 
     if len(symbols) > 0 and symbols[0] == Symbol.Equal:
         symbols.pop(0)
-        assert len(symbols) > 0, 'invalid variable assignment: missing value'
+        if len(symbols) == 0:
+            raise SyntaxError('invalid variable assignment: missing value')
+
         value = parse_symbols(symbols)
         return variable.set(value)
 
@@ -126,19 +139,28 @@ def parse_variable(symbols: list):
 def parse_statement(symbols: list):
     # get expression
     symbols.pop(0)
-    assert len(symbols) > 0, 'invalid expression for statement'
+    if len(symbols) == 0:
+        raise SyntaxError('invalid expression for statement')
+
     condition = symbols.pop(0)
-    assert condition == Symbol.OpenParen, 'invalid expression for statement'
+    if condition != Symbol.OpenParen:
+        raise SyntaxError('invalid statement: missing (')
+
     condition = parse_expression(symbols)
-    assert len(symbols) > 0 and symbols[0] == Symbol.CloseParen, 'invalid expression for statement'
+    if len(symbols) == 0 or symbols[0] != Symbol.CloseParen:
+        raise SyntaxError('invalid expression for statement')
+
     symbols.pop(0)
 
     # get blocks
-    assert len(symbols) > 0, 'missing block for if statement'
+    if len(symbols) == 0:
+        raise SyntaxError('missing block for if statement')
     then_block = symbols.pop(0)
     else_block = None
 
-    assert then_block == Symbol.OpenBracket, 'incorrect block for then statement'
+    if then_block != Symbol.OpenBracket:
+        raise SyntaxError('incorrect block for then statement')
+
     then_block = parse_block(symbols)
 
     if len(symbols) == 0: return IfStatement(condition, then_block, else_block)
@@ -146,7 +168,9 @@ def parse_statement(symbols: list):
     if symbols[0] == Symbol.Else:
         symbols.pop(0)
         a = symbols.pop(0)
-        assert a == Symbol.OpenBracket, 'mission block for else statement'
+        if a != Symbol.OpenBracket:
+            raise SyntaxError('mission block for else statement')
+
         else_block = parse_block(symbols)
 
     if len(symbols) > 0 and symbols[0] == Symbol.CloseParen: symbols.pop(0)

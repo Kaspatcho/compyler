@@ -196,7 +196,7 @@ class TestVariable(TestCase):
         self.assertEqual(result, 2)
 
     def test_cannot_reset_variable(self):
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             symbols = lexer('{let c=1; let c=2;}')
             parse_symbols(symbols)
 

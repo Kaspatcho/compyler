@@ -5,7 +5,8 @@ class Variable:
     def __init__(self, name, value) -> None:
         self.name = name
         self.value = value
-        assert self.name not in VARIABLES.keys(), 'already assigned this variable'
+        if self.name in VARIABLES.keys():
+            raise TypeError('already assigned this variable')
         VARIABLES[self.name] = self
 
     def set(self, value):
@@ -17,14 +18,3 @@ class Variable:
         if result != self.value: self.value = result
 
         return result
-
-
-def assign_variable(name, value):
-    assert name not in VARIABLES.keys(), 'already assigned this variable'
-    VARIABLES[name] = value
-    return value
-
-
-def set_variable(name, value):
-    VARIABLES[name] = value
-    return value

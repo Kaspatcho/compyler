@@ -21,8 +21,12 @@ class Builtin:
                 return
 
             case BuiltinFunction.Read:
-                assert len(self.args) == 1, 'input should have one argument'
-                assert isinstance(self.args[0], str), 'input argument must be a string'
+                if len(self.args) != 1:
+                    raise TypeError('input should have one argument')
+
+                if not isinstance(self.args[0], str):
+                    raise TypeError('read argument must be a string')
+
                 return input(self.args[0])
             case _:
-                raise Exception(f'unknown function "{self.type}"')
+                raise NameError(f'unknown function "{self.type}"')
