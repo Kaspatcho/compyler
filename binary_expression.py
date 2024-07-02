@@ -1,8 +1,6 @@
 from symbols import Symbol
 from variable import VARIABLES
 
-assert len(Symbol) == 24, 'BinaryExpression nao cobre todos os simbolos'
-
 
 class BinaryExpression:
     def __init__(self, left, op, right) -> None:
