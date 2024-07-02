@@ -1,6 +1,7 @@
 #!/bin/python3
 from unittest import TestCase, main, mock
 from lexer import lexer
+import variable as var
 from symbols import Symbol
 from parse_symbols import parse_symbols
 from contextlib import redirect_stdout
@@ -199,28 +200,32 @@ class TestBuiltin(TestCase):
 
 
 class TestVariable(TestCase):
+    def tearDown(self) -> None:
+        super().tearDown()
+        var.VARIABLES.clear()
+
     @expression(lexer_value='let a=1')
     def test_assignment(self, result):
         self.assertEqual(result, 1)
 
-    @expression(lexer_value='{let b=1; b=2;}')
+    @expression(lexer_value='{let a=1; a=2;}')
     def test_setting_value(self, result):
         self.assertEqual(result, 2)
 
     def test_cannot_reset_variable(self):
         with self.assertRaises(TypeError):
-            symbols = lexer('{let c=1; let c=2;}')
+            symbols = lexer('{let a=1; let a=2;}')
             parse_symbols(symbols)
 
-    @expression(lexer_value='{let d=1+1;}')
+    @expression(lexer_value='{let a=1+1;}')
     def test_variable_expression(self, result):
         self.assertEqual(result, 2)
 
-    @expression(lexer_value='{let e = 2; e + 2; }')
+    @expression(lexer_value='{let a = 2; a + 2; }')
     def test_expression_variable(self, result):
         self.assertEqual(result, 4)
 
-    @expression(lexer_value='{let age = 19; if(age >= 18) { 1; } else {0; }; }')
+    @expression(lexer_value='{let a = 19; if(a >= 18) { 1; } else {0; }; }')
     def test_conditions(self, result):
         self.assertEqual(result, 1)
 
@@ -241,11 +246,15 @@ class TestVariable(TestCase):
 
 
 class TestWhile(TestCase):
+    def tearDown(self) -> None:
+        super().tearDown()
+        var.VARIABLES.clear()
+
     @expression(lexer_value='{ let i=0; while(i < 10) { i = i+1; }; i; }')
     def test_loop(self, result):
         self.assertEqual(result, 10)
 
-    @expression(lexer_value='{ let x=0; let y=1; let z=x; while (x<13) { z=x; x=y; y=z+y; }; x; }')
+    @expression(lexer_value='{ let a=0; let b=1; let c=a; while (a<13) { c=a; a=b; b=c+b; }; a; }')
     def test_fibonacci(self, result):
         self.assertEqual(result, 13)
 
