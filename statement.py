@@ -40,3 +40,18 @@ class IfStatement:
 
         if result == 1: return self.block.execute()
         elif self.elseBlock: return self.elseBlock.execute()
+
+
+class WhileStatement:
+    def __init__(self, condition: BinaryExpression, block: Block) -> None:
+        self.condition = condition
+        self.block = block
+
+    def __repr__(self) -> str:
+        return f'WhileStatement(condition={self.condition}, block={self.block})'
+
+    def execute(self):
+        condition = self.condition.execute() if hasattr(self.condition, 'execute') else self.condition
+        while condition:
+            self.block.execute()
+            condition = self.condition.execute() if hasattr(self.condition, 'execute') else self.condition

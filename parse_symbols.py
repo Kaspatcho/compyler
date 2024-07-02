@@ -1,6 +1,6 @@
 from symbols import Symbol, BuiltinFunction
 from binary_expression import BinaryExpression
-from statement import IfStatement
+from statement import IfStatement, WhileStatement
 from variable import Variable, VARIABLES, VariableAssignment
 from builtin import Builtin
 from block import Block
@@ -38,6 +38,9 @@ def parse_symbols(symbols: list):
 
     if symbols[0] == Symbol.If:
         return parse_statement(symbols)
+
+    if symbols[0] == Symbol.While:
+        return parse_while(symbols)
 
     if symbols[0] == Symbol.Let:
         return parse_let(symbols)
@@ -175,3 +178,30 @@ def parse_statement(symbols: list):
 
     if len(symbols) > 0 and symbols[0] == Symbol.CloseParen: symbols.pop(0)
     return IfStatement(condition, then_block, else_block)
+
+
+def parse_while(symbols: list):
+    symbols.pop(0)
+    if len(symbols) == 0:
+        raise SyntaxError('invalid expression for statement')
+
+    # get condition
+    condition = symbols.pop(0)
+    if condition != Symbol.OpenParen:
+        raise SyntaxError('invalid statement: missing (')
+
+    condition = parse_expression(symbols)
+    if len(symbols) == 0 or symbols[0] != Symbol.CloseParen:
+        raise SyntaxError('invalid expression for statement')
+
+    symbols.pop(0)
+
+    if len(symbols) == 0:
+        raise SyntaxError('missing block for if statement')
+    block = symbols.pop(0)
+
+    if block != Symbol.OpenBracket:
+        raise SyntaxError('incorrect block for then statement')
+
+    block = parse_block(symbols)
+    return WhileStatement(condition, block)

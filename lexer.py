@@ -1,6 +1,6 @@
 from symbols import Symbol, BuiltinFunction
 
-assert len(Symbol) == 24, 'lexer nao cobre todos os simbolos'
+assert len(Symbol) == 25, 'lexer nao cobre todos os simbolos'
 
 
 def match_keywords(word: str):
@@ -11,6 +11,8 @@ def match_keywords(word: str):
             return Symbol.Else
         case 'let':
             return Symbol.Let
+        case 'while':
+            return Symbol.While
         case _:
             builtin_functions = [x.name.lower() for x in BuiltinFunction]
             if word.lower() in builtin_functions: return BuiltinFunction[word.capitalize()]

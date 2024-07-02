@@ -240,4 +240,14 @@ class TestVariable(TestCase):
             parse_symbols(symbols)
 
 
+class TestWhile(TestCase):
+    @expression(lexer_value='{ let i=0; while(i < 10) { i = i+1; }; i; }')
+    def test_loop(self, result):
+        self.assertEqual(result, 10)
+
+    @expression(lexer_value='{ let x=0; let y=1; let z=x; while (x<13) { z=x; x=y; y=z+y; }; x; }')
+    def test_fibonacci(self, result):
+        self.assertEqual(result, 13)
+
+
 if __name__ == '__main__': main()
