@@ -89,7 +89,7 @@ def parse_block(symbols: list):
         symbols.pop(0)
 
     if len(symbols) == 0 or symbols[0] != Symbol.CloseBracket:
-        raise SyntaxError('line without semicolon')
+        raise SyntaxError('block without }')
     symbols.pop(0)
 
     return Block(lines)
