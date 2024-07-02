@@ -185,6 +185,18 @@ class TestBuiltin(TestCase):
     def test_print_with_return(self, result):
         self.assertEqual(result, 1)
 
+    def test_incorrect_read_type(self):
+        with self.assertRaises(TypeError):
+            symbols = lexer('read(1)')
+            expression = parse_symbols(symbols)
+            expression.execute()
+
+    def test_read_with_no_argument(self):
+        with self.assertRaises(TypeError):
+            symbols = lexer('read()')
+            expression = parse_symbols(symbols)
+            expression.execute()
+
 
 class TestVariable(TestCase):
     @expression(lexer_value='let a=1')
@@ -211,6 +223,21 @@ class TestVariable(TestCase):
     @expression(lexer_value='{let age = 19; if(age >= 18) { 1; } else {0; }; }')
     def test_conditions(self, result):
         self.assertEqual(result, 1)
+
+    def test_incorrect_variable(self):
+        with self.assertRaises(TypeError):
+            symbols = lexer('let = 2')
+            parse_symbols(symbols)
+
+    def test_missing_equal(self):
+        with self.assertRaises(SyntaxError):
+            symbols = lexer('let a 2')
+            parse_symbols(symbols)
+
+    def test_missing_value(self):
+        with self.assertRaises(SyntaxError):
+            symbols = lexer('let a =')
+            parse_symbols(symbols)
 
 
 if __name__ == '__main__': main()
