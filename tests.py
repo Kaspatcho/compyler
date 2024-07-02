@@ -1,6 +1,6 @@
 #!/bin/python3
 from unittest import TestCase, main, mock
-from lexer import lexer
+from lexer import lexer, file_lexer
 import variable as var
 from symbols import Symbol
 from parse_symbols import parse_symbols
@@ -257,6 +257,41 @@ class TestWhile(TestCase):
     @expression(lexer_value='{ let a=0; let b=1; let c=a; while (a<13) { c=a; a=b; b=c+b; }; a; }')
     def test_fibonacci(self, result):
         self.assertEqual(result, 13)
+
+
+class TestFile(TestCase):
+    def tearDown(self) -> None:
+        super().tearDown()
+        var.VARIABLES.clear()
+
+    def test_fibonacci(self):
+        io = StringIO()
+        symbols = file_lexer('examples/fib.wy')
+        expression = parse_symbols(symbols)
+
+        with redirect_stdout(io): expression.execute()
+        out = io.getvalue().strip()
+        expected = '1\n1\n2\n3\n5\n8\n13'
+        self.assertEqual(out, expected)
+
+    def test_hello_world(self):
+        io = StringIO()
+        symbols = file_lexer('examples/hello-world.wy')
+        expression = parse_symbols(symbols)
+
+        with redirect_stdout(io): expression.execute()
+        out = io.getvalue().strip()
+        self.assertEqual(out, 'Hello, World!')
+
+    def test_fizz_buzz(self):
+        io = StringIO()
+        symbols = file_lexer('examples/fizz-buzz.wy')
+        expression = parse_symbols(symbols)
+
+        with redirect_stdout(io): expression.execute()
+        out = io.getvalue().strip()
+        expected = '1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz'
+        self.assertEqual(out, expected)
 
 
 if __name__ == '__main__': main()

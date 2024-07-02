@@ -1,4 +1,5 @@
 from symbols import Symbol, BuiltinFunction
+from os.path import splitext
 
 assert len(Symbol) == 25, 'lexer nao cobre todos os simbolos'
 
@@ -99,3 +100,19 @@ def lexer(expression: str) -> list[Symbol]:
             case _: raise Exception(f'nao sei oq é "{c}"')
 
     return symbols
+
+
+def file_lexer(file: str):
+    _, extension = splitext(file)
+    if extension != '.wy':
+        raise ImportError('file is not a .wy file')
+
+    code = ''
+    with open(file, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if not line: continue
+            if line.endswith('}'): line += ';'
+            code += line
+
+    return lexer('{' + code + '}')

@@ -1,9 +1,14 @@
-from lexer import lexer
+from lexer import lexer, file_lexer
 from parse_symbols import parse_symbols
 from sys import argv
+from os.path import isfile
 
-_, test, *args = argv
-symbols = lexer(test)
+_, code, *args = argv
+if isfile(code):
+    symbols = file_lexer(code)
+else:
+    symbols = lexer(code)
+
 expression = parse_symbols(symbols)
 
 if len(args) > 0 and '--tree' in args:

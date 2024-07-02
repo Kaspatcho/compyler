@@ -1,0 +1,9 @@
+let a=0;
+let b=1;
+let c=a;
+while (a<13) {
+    c=a;
+    a=b;
+    b=c+b;
+    print(a);
+}
