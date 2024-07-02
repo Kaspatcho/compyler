@@ -2,6 +2,17 @@
 simple code interpreter in python.
 
 ## Examples
+### reading from file
+```sh
+$ python3 main.py examples/fib.wy
+1
+1
+2
+3
+5
+8
+13
+```
 ### Math expression
 ```sh
 $ python3 main.py '(2*(1+1))**2'
@@ -58,16 +69,4 @@ $ python3 main.py '{ let i=1; while (i<=5) { print(i); i = i+1; }; }'
 3
 4
 5
-```
-
-### fibonacci
-```sh
-$ python3 main.py '{ let a=0; let b=1; let c=a; while (a<13) { c=a; a=b; b=c+b; print(a); }; }'
-1
-1
-2
-3
-5
-8
-13
 ```
