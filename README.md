@@ -45,7 +45,29 @@ $ python3 main.py '{ let a=1; print(a); }'
 
 ### reading input
 ```sh
-$ python3 main.py '{ let name=read("what is your name? "); print(name); }'
-what is your name? perry the platypus
+$ python3 main.py '{ let name=read("what is your name: "); print(name); }'
+what is your name: perry the platypus
 perry the platypus
+```
+
+### while loop
+```sh
+$ python3 main.py '{ let i=1; while (i<=5) { print(i); i = i+1; }; }'
+1
+2
+3
+4
+5
+```
+
+### fibonacci
+```sh
+$ python3 main.py '{ let a=0; let b=1; let c=a; while (a<13) { c=a; a=b; b=c+b; print(a); }; }'
+1
+1
+2
+3
+5
+8
+13
 ```
